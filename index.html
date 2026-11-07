@@ -1638,7 +1638,7 @@ const CONTACT_FORM_KEY = "5aa6b934-40dc-429e-8eb2-a2ce51c5c305";
       const kind = (form.querySelector('input[name=kind]:checked')||{}).value || '';
       const payload = {
         access_key: CONTACT_FORM_KEY,
-        subject: '【tokalia design】お問い合わせ：' + kind,
+        subject: '【tokalia design】お問い合わせ：' + kind + '（' + v('name') + ' 様・' + new Date().toLocaleString('ja-JP',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}) + '）',
         from_name: 'tokalia design ホームページ',
         name: v('name'),
         email: v('email'),
