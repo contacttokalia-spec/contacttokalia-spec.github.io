@@ -470,6 +470,7 @@ section{position:relative;scroll-margin-top:var(--header-h)}
 .form-pending{display:flex;gap:10px;align-items:flex-start;font-size:12px;line-height:1.85;color:var(--brown);background:rgba(243,223,216,.6);border-radius:12px;padding:12px 14px;margin:0}
 .form-pending .tag{flex-shrink:0;font-size:10px}
 .cform .btn{width:100%;margin-top:0;border:0;cursor:pointer;font-family:var(--sans)}
+.cform .btn:disabled{opacity:.7;cursor:wait}
 .cform .two{display:grid;gap:22px}
 .form-result{display:none;text-align:center;padding:16px;border-radius:14px;background:var(--sage-l);font-size:13px;line-height:1.9;color:var(--brown)}
 .form-result.is-show{display:block}
@@ -1394,7 +1395,7 @@ body.is-splash{overflow:hidden}
         <h2 class="sec-title">Contact</h2>
         <p class="sec-sub" style="margin-bottom:22px">ご依頼・お問い合わせ</p>
         <p>お店の魅力を、もっと伝わるカタチに。<br>まずはお気軽に、ご相談ください。</p>
-        <!-- お問い合わせフォーム（見た目のみ。送信の仕組みは本番公開時に接続します） -->
+        <!-- お問い合わせフォーム（送信内容は Web3Forms 経由で contact.tokalia@gmail.com に届きます） -->
         <div class="form-wrap" id="form">
           <div class="form-head"><span class="en">Contact Form</span><h3>お問い合わせフォーム</h3></div>
           <form class="cform" novalidate data-form>
@@ -1446,8 +1447,8 @@ body.is-splash{overflow:hidden}
               <input type="url" id="f-url" name="url" inputmode="url" placeholder="例）https://example.com">
             </div>
             <p class="form-privacy">ご入力いただいた個人情報は、お問い合わせへのご連絡のためにのみ使用いたします。</p>
-            <p class="form-pending"><span class="tag">準備中</span><span>フォームの送信機能は現在準備中です。お急ぎの方は、下記のメールアドレスからお問い合わせください。</span></p>
-            <button class="btn" type="submit">内容を送信する<span class="arrow"><svg viewBox="0 0 10 10"><path d="M1 5h7M5 2l3 3-3 3" stroke="#FCF9F4" stroke-width="1.2" fill="none"/></svg></span></button>
+            <input type="checkbox" name="botcheck" class="sr-only" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <button class="btn" type="submit" data-submit>内容を送信する<span class="arrow"><svg viewBox="0 0 10 10"><path d="M1 5h7M5 2l3 3-3 3" stroke="#FCF9F4" stroke-width="1.2" fill="none"/></svg></span></button>
             <div class="form-result" role="status" aria-live="polite" data-form-result></div>
           </form>
         </div>
@@ -1573,6 +1574,11 @@ body.is-splash{overflow:hidden}
 
 <script>
 
+/* =========================================================
+   お問い合わせフォームの受付キー（Web3Forms）
+   ========================================================= */
+const CONTACT_FORM_KEY = "5aa6b934-40dc-429e-8eb2-a2ce51c5c305";
+
 (function(){
   const pages = [...document.querySelectorAll('[data-page]')];
   const header = document.querySelector('.header');
@@ -1595,7 +1601,7 @@ body.is-splash{overflow:hidden}
     });
   });
 
-  /* ---- お問い合わせフォーム（入力チェックのみ／送信は準備中） ---- */
+  /* ---- お問い合わせフォーム（Web3Formsでメール送信） ---- */
   document.querySelectorAll('[data-form]').forEach(form=>{
     const result = form.querySelector('[data-form-result]');
     const check = field=>{
@@ -1625,8 +1631,38 @@ body.is-splash{overflow:hidden}
         bad[0].scrollIntoView({behavior:'smooth', block:'center'});
         return;
       }
-      result.innerHTML = 'ご入力ありがとうございます。<br>送信機能は現在準備中のため、まだ送信されていません。<br>お手数ですが、下記のメールアドレスからお問い合わせください。';
-      result.classList.add('is-show');
+      if(form.querySelector('[name=botcheck]').checked) return;
+      const btn = form.querySelector('[data-submit]');
+      const label = btn.firstChild;
+      const v = n => (form.elements[n] && form.elements[n].value || '').trim();
+      const kind = (form.querySelector('input[name=kind]:checked')||{}).value || '';
+      const payload = {
+        access_key: CONTACT_FORM_KEY,
+        subject: '【tokalia design】お問い合わせ：' + kind,
+        from_name: 'tokalia design ホームページ',
+        name: v('name'),
+        email: v('email'),
+        'ご相談の種類': kind,
+        'お問い合わせ内容': v('message'),
+        '店名・業種': v('shop') || '（未入力）',
+        '公開したい時期': v('when') || '（未選択）',
+        '今のホームページ': v('url') || '（未入力）'
+      };
+      btn.disabled = true; label.textContent = '送信中…';
+      result.classList.remove('is-show');
+      fetch('https://api.web3forms.com/submit', {
+        method:'POST',
+        headers:{'Content-Type':'application/json','Accept':'application/json'},
+        body: JSON.stringify(payload)
+      }).then(r=>r.json()).then(res=>{
+        if(!res.success) throw new Error(res.message||'error');
+        form.reset();
+        result.innerHTML = 'お問い合わせありがとうございます。<br>内容を受け付けました。2営業日以内に、ご入力のメールアドレスへご連絡いたします。';
+        result.classList.add('is-show');
+      }).catch(()=>{
+        result.innerHTML = '申し訳ありません、送信できませんでした。<br>お手数ですが、下記のメールアドレスから直接お問い合わせください。';
+        result.classList.add('is-show');
+      }).finally(()=>{ btn.disabled = false; label.textContent = '内容を送信する'; });
     });
   });
 
