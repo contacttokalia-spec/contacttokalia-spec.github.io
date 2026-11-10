@@ -400,6 +400,12 @@ section{position:relative;scroll-margin-top:var(--header-h)}
 .price .lbl{font-family:var(--en);font-style:italic;font-size:15px;color:var(--orange-d);letter-spacing:.1em}
 .price strong{font-family:var(--mincho);font-weight:500;font-size:18px;letter-spacing:.12em;color:var(--brown)}
 .price p{margin:0;font-size:13px;color:var(--ink)}
+.price .amt{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px;font-size:14px;color:var(--brown)}
+.price .amt .was{text-decoration:line-through;color:var(--ink);opacity:.75}
+.price .amt .now{font-family:var(--mincho);letter-spacing:.06em}
+.price .amt b{font-family:var(--en);font-weight:500;font-size:30px;color:var(--orange-d);letter-spacing:.02em;margin:0 2px}
+.price .amt small{font-size:12px;color:var(--ink);margin-left:2px}
+.price .limit{display:inline-block;justify-self:start;padding:3px 12px;border-radius:999px;background:rgba(217,155,112,.16);color:var(--orange-d);font-size:12px;letter-spacing:.06em}
 .sub-svcs{display:grid;gap:14px;margin-top:22px}
 .sub-svc{padding:26px;border-radius:20px;background:var(--ivory);border:1px solid var(--line)}
 .sub-svc .en{font-family:var(--en);font-style:italic;font-size:14px;color:var(--orange-d);letter-spacing:.1em}
@@ -608,7 +614,7 @@ section{position:relative;scroll-margin-top:var(--header-h)}
   .plan-col{padding:36px 32px}
   .price{grid-template-columns:auto 1fr;align-items:center;gap:8px 30px;padding:30px 44px}
   .price p{grid-column:2}
-  .price .lbl{grid-row:1/3}
+  .price .lbl{grid-row:1/6;align-self:start;padding-top:4px}
   .steps{display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
   .steps::before{left:6%;right:6%;top:28px;bottom:auto;width:auto;height:1px;background:repeating-linear-gradient(90deg,var(--sage-d) 0 4px,transparent 4px 9px)}
   .step{grid-template-columns:1fr;justify-items:center;text-align:center;padding:0;gap:16px}
@@ -1244,8 +1250,10 @@ body.is-splash{overflow:hidden}
         </div>
         <div class="price">
           <span class="lbl">Price</span>
-          <strong>料金：現在準備中です</strong>
-          <p>ご依頼内容をお伺いしたうえで、個別にご案内いたします。</p>
+          <strong>1ページのホームページ<span style="display:inline-block">（公開作業まで）</span></strong>
+          <p class="amt"><span class="was">通常 30,000円</span><span class="now">モニター価格 <b>20,000</b>円<small>（税込）</small></span></p>
+          <p class="limit">2026年12月末まで・先着3名様限定</p>
+          <p>複数ページのホームページやリニューアルは、ご依頼内容に合わせてお見積りいたします。修正回数や納期も、お見積りの際にご案内します。</p>
         </div>
       </article>
 
@@ -1393,7 +1401,7 @@ body.is-splash{overflow:hidden}
         <details class="rv"><summary><span class="q">Q.</span><span>ホームページのことが全くわからなくても依頼できますか？</span><span class="pm"></span></summary><div class="ans"><span class="a-mark">A.</span><p>はい、大丈夫です。専門用語はできるだけ使わず、ひとつずつご説明しながら進めます。「何から決めればいいかわからない」という段階からご相談ください。</p></div></details>
         <details class="rv"><summary><span class="q">Q.</span><span>文章や写真がまだ揃っていません。</span><span class="pm"></span></summary><div class="ans"><span class="a-mark">A.</span><p>ご安心ください。ヒアリングをもとに、掲載する内容や文章の構成をご提案します。写真のご用意についても、あわせてご相談いただけます。</p></div></details>
         <details class="rv"><summary><span class="q">Q.</span><span>スマートフォンでもきれいに見られますか？</span><span class="pm"></span></summary><div class="ans"><span class="a-mark">A.</span><p>はい。スマートフォンでの見やすさを最優先に、PCでも美しく表示されるよう制作します。</p></div></details>
-        <details class="rv"><summary><span class="q">Q.</span><span>料金はいくらですか？</span><span class="pm"></span></summary><div class="ans"><span class="a-mark">A.</span><p>料金は現在準備中です。ご依頼内容をお伺いしたうえで、個別にご案内いたします。</p></div></details>
+        <details class="rv"><summary><span class="q">Q.</span><span>料金はいくらですか？</span><span class="pm"></span></summary><div class="ans"><span class="a-mark">A.</span><p>1ページのホームページ（公開作業まで）は、通常30,000円（税込）です。現在は2026年12月末まで・先着3名様限定で、モニター価格20,000円（税込）にてお受けしています。複数ページやリニューアルは、ご依頼内容をお伺いしたうえでお見積りいたします。</p></div></details>
         <details class="rv"><summary><span class="q">Q.</span><span>制作期間はどのくらいかかりますか？</span><span class="pm"></span></summary><div class="ans"><span class="a-mark">A.</span><p>ページ数や内容によって異なります。ヒアリングの際に、おおよそのスケジュールをお伝えします。公開したい時期がお決まりの場合は、お早めにご相談ください。</p></div></details>
         <details class="rv"><summary><span class="q">Q.</span><span>デザインの修正はお願いできますか？</span><span class="pm"></span></summary><div class="ans"><span class="a-mark">A.</span><p>はい。実際の画面をご確認いただきながら調整します。修正の範囲や回数は、ご依頼内容に合わせて事前にご相談のうえ決めさせていただきます。</p></div></details>
         <details class="rv"><summary><span class="q">Q.</span><span>依頼や支払いはどのように行いますか？</span><span class="pm"></span></summary><div class="ans"><span class="a-mark">A.</span><p>まずはメールでお問い合わせください。ご相談内容をお伺いしたうえで、ご依頼の進め方やお支払い方法についてご案内いたします。</p></div></details>
