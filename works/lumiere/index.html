@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LUMIÈRE PRIVÉE — 架空のエステサロン（制作サンプル）</title>
+<meta name="description" content="架空のプライベートエステサロン「LUMIÈRE PRIVÉE」のサンプルサイト。水のヴェールに包まれる、肌のためのアート。tokalia designによる制作サンプルです。実在の店舗ではありません。">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#F7FAF9">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+JP:wght@200;300;400&family=Noto+Sans+JP:wght@300;400&display=swap">
+<style>
+/* WATER VEIL — skin seen through water.
+   Every photograph is rendered from liquid physics (refraction, rim light, speculars);
+   the page adds the motion: a drop sliding, light crossing water, a serum veil drifting. */
+:root {
+  --water: #F7FAF9;
+  --mint: #DCECE8;
+  --aqua: #D9E9E9;
+  --ice: #DCE7F0;
+  --mist: #E8E8E6;
+  --rose: #EBDDE1;
+  --mauve: #766B77;
+  --ink: #574e59;
+  --ink-2: #857b86;
+  --serif: "Cormorant Garamond", "Garamond", "Times New Roman", serif;
+  --mincho: "Noto Serif JP", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  --sans: "Noto Sans JP", "Hiragino Sans", sans-serif;
+  --g: clamp(22px, 5.6vw, 84px);
+  --ease: cubic-bezier(.3, .6, .2, 1);
+  color-scheme: light;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; overflow-x: clip; }
+body { margin: 0; background: var(--water); color: var(--ink); font-family: var(--sans); font-weight: 300; font-size: 14.5px; line-height: 2.2; letter-spacing: .08em; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+img { display: block; max-width: 100%; }
+img.fail { opacity: 0; }
+a { color: inherit; }
+p, h1, h2, h3, ul, ol, figure, dl, dd { margin: 0; padding: 0; }
+ul, ol { list-style: none; }
+h1, h2, h3 { font-weight: 300; text-wrap: balance; }
+:focus-visible { outline: 1px solid var(--mauve); outline-offset: 4px; }
+.nb { display: inline-block; }
+
+.label { display: inline-flex; align-items: center; gap: 12px; font-family: var(--serif); font-size: 12.5px; letter-spacing: .32em; text-transform: uppercase; color: var(--ink-2); }
+.label i { font-style: italic; letter-spacing: .04em; color: var(--mauve); font-size: 14px; text-transform: none; }
+.label::after { content: ""; width: 48px; height: 1px; background: linear-gradient(90deg, var(--mauve), transparent); }
+.h-sec { font-family: var(--serif); font-weight: 300; font-size: clamp(28px, 7.4vw, 52px); line-height: 1.15; letter-spacing: .04em; margin-top: 16px; }
+.h-sec em { font-style: italic; }
+.jp { font-family: var(--mincho); font-weight: 300; font-size: clamp(19px, 5.2vw, 28px); line-height: 1.95; letter-spacing: .14em; }
+.body p + p { margin-top: 1.5em; }
+.note { font-size: 12px; color: var(--ink-2); line-height: 1.9; }
+
+/* photo wells: if a photo fails, a soft water surface remains */
+.well { position: relative; overflow: hidden; background: linear-gradient(160deg, var(--water), var(--aqua) 55%, var(--mint)); }
+.well::before { content: ""; position: absolute; inset: 0; background: radial-gradient(60% 40% at 30% 30%, rgba(255,255,255,.8), transparent 70%), radial-gradient(40% 30% at 75% 70%, rgba(235,221,225,.6), transparent 70%); }
+.well img { position: relative; width: 100%; height: 100%; object-fit: cover; }
+
+/* sample strip */
+.strip { background: var(--mint); color: var(--ink-2); font-size: 11.5px; letter-spacing: .1em; }
+.strip .in { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px 16px; padding: 7px var(--g); }
+.strip b { font-family: var(--serif); font-weight: 400; color: var(--ink); letter-spacing: .3em; margin-right: 10px; border: 1px solid rgba(118,107,119,.5); padding: 0 8px; font-size: 10.5px; }
+
+/* header */
+.hd { position: sticky; top: 0; z-index: 40; transition: background .8s var(--ease), box-shadow .8s var(--ease); }
+.hd.on { background: rgba(247, 250, 249, .72); -webkit-backdrop-filter: blur(14px) saturate(1.3); backdrop-filter: blur(14px) saturate(1.3); box-shadow: 0 1px 0 rgba(118,107,119,.14); }
+.hd .in { display: flex; justify-content: space-between; align-items: center; height: 68px; padding-inline: var(--g); }
+.logo { font-family: var(--serif); font-weight: 400; font-size: 16px; letter-spacing: .34em; text-decoration: none; white-space: nowrap; }
+.hd nav { display: none; gap: 30px; }
+.hd nav a { font-family: var(--serif); font-size: 13px; letter-spacing: .22em; text-decoration: none; position: relative; padding: 4px 0; }
+.hd nav a::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--mauve), transparent); transform: scaleX(0); transition: transform .8s var(--ease); }
+.hd nav a:hover::after { transform: scaleX(1); }
+.menu-btn { height: 44px; padding-left: 14px; margin-right: -4px; border: 0; background: none; cursor: pointer; color: inherit; display: inline-flex; align-items: center; gap: 12px; font-family: var(--serif); font-size: 12.5px; letter-spacing: .26em; }
+.menu-btn .w { width: 28px; height: 10px; position: relative; }
+.menu-btn .w::before, .menu-btn .w::after { content: ""; position: absolute; left: 0; right: 0; height: 1px; background: currentColor; transition: transform .8s var(--ease), top .8s var(--ease); }
+.menu-btn .w::before { top: 2px; } .menu-btn .w::after { top: 8px; }
+.menu-btn[aria-expanded="true"] .w::before { top: 5px; transform: rotate(18deg); }
+.menu-btn[aria-expanded="true"] .w::after { top: 5px; transform: rotate(-18deg); }
+@media (min-width: 1040px) { .hd nav { display: flex; } .menu-btn { display: none; } }
+
+.ov { position: fixed; inset: 0; z-index: 35; display: grid; align-content: center; padding: 110px var(--g) 50px; background: rgba(247, 250, 249, .6); -webkit-backdrop-filter: blur(26px) saturate(1.4); backdrop-filter: blur(26px) saturate(1.4); opacity: 0; visibility: hidden; transition: opacity .9s var(--ease), visibility .9s; }
+.ov::before { content: ""; position: absolute; inset: 0; background: url("img/hero-glass.jpg") center / cover; opacity: .35; z-index: -1; }
+.ov.open { opacity: 1; visibility: visible; }
+.ov ol { display: grid; gap: 6px; }
+.ov li { transform: translateY(12px); opacity: 0; transition: transform 1s var(--ease), opacity 1s var(--ease); }
+.ov.open li { transform: none; opacity: 1; }
+.ov.open li:nth-child(2) { transition-delay: .06s; } .ov.open li:nth-child(3) { transition-delay: .12s; } .ov.open li:nth-child(4) { transition-delay: .18s; } .ov.open li:nth-child(5) { transition-delay: .24s; } .ov.open li:nth-child(6) { transition-delay: .3s; }
+.ov a { display: block; text-decoration: none; font-family: var(--serif); font-size: clamp(28px, 8.6vw, 44px); letter-spacing: .1em; line-height: 1.45; }
+.ov a small { display: block; font-family: var(--mincho); font-size: 11.5px; letter-spacing: .2em; color: var(--ink-2); line-height: 1; margin-bottom: 4px; }
+.ov .foot { margin-top: 40px; font-family: var(--serif); font-style: italic; color: var(--ink-2); }
+body.lock { overflow: hidden; }
+
+/* ===== 01 HERO ===== */
+.hero { position: relative; height: max(calc(100svh - 100px), 600px); max-height: 960px; overflow: hidden; background: var(--aqua); }
+.hero > .well { position: absolute; inset: 0; }
+.hero > .well img { object-position: 46% 40%; }
+.veil { position: absolute; inset: 0; pointer-events: none; }
+.veil.light { background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,.55) 45%, rgba(255,255,255,0) 58%) no-repeat; background-size: 240% 100%; background-position: 130% 0; mix-blend-mode: screen; }
+.veil.calm { background: radial-gradient(70% 50% at 32% 50%, rgba(247,250,249,.78), rgba(247,250,249,.25) 65%, rgba(247,250,249,0) 85%); }
+.ribbon { position: absolute; pointer-events: none; }
+.hero .ribbon { width: 130%; left: -12%; bottom: -4%; opacity: .95; }
+.slide { position: absolute; width: 46px; pointer-events: none; z-index: 4; }
+.slide.s1 { left: 72%; top: -10%; }
+.slide.s2 { left: 18%; top: -14%; width: 30px; }
+.dot { position: absolute; z-index: 4; pointer-events: none; }
+.dot.d1 { width: 34px; left: calc(var(--g) + 5.4em); top: 37%; }
+.dot.d2 { width: 20px; left: calc(var(--g) + 11.5em); top: 50%; }
+.dot.d3 { width: 26px; left: calc(var(--g) + 2em); top: 60%; }
+.hero-copy { position: absolute; z-index: 3; left: var(--g); top: 30%; right: var(--g); display: grid; gap: 22px; }
+.hero-copy h1 { font-family: var(--mincho); font-weight: 200; font-size: clamp(32px, 9.6vw, 78px); line-height: 1.6; letter-spacing: .18em; color: var(--ink); text-shadow: 0 0 30px rgba(247,250,249,.9), 0 0 2px rgba(247,250,249,.8); }
+.hero-copy h1 span { display: block; }
+.hero-copy h1 span + span { padding-left: 1.9em; }
+.hero-copy .en { font-family: var(--serif); font-style: italic; font-size: clamp(17px, 4.4vw, 26px); letter-spacing: .16em; color: var(--mauve); text-shadow: 0 0 16px rgba(247,250,249,.9); }
+.hero-foot { position: absolute; z-index: 3; left: var(--g); right: var(--g); bottom: 26px; display: flex; justify-content: space-between; align-items: end; }
+.hero-foot .name { font-family: var(--serif); font-size: clamp(14px, 3.8vw, 20px); letter-spacing: .44em; color: var(--ink); }
+.cue { display: grid; justify-items: center; gap: 6px; text-decoration: none; font-family: var(--serif); font-size: 11px; letter-spacing: .3em; color: var(--ink-2); }
+.cue i { position: relative; width: 1px; height: 54px; background: linear-gradient(rgba(118,107,119,.6), rgba(118,107,119,0)); overflow: visible; }
+.cue i img { position: absolute; left: -6px; top: 0; width: 13px; max-width: none; }
+@media (min-width: 1040px) {
+  .hero > .well img { object-position: 50% 45%; }
+  .hero-copy { top: 33%; left: calc(var(--g) + 2vw); }
+  .veil.calm { background: radial-gradient(52% 50% at 28% 50%, rgba(247,250,249,.8), rgba(247,250,249,.2) 65%, rgba(247,250,249,0) 85%); }
+  .hero .ribbon { width: 92%; left: auto; right: -6%; bottom: -8%; }
+  .dot.d1 { width: 52px; left: calc(var(--g) + 7em); top: 40%; } .dot.d2 { width: 30px; left: calc(var(--g) + 13.8em); top: 51%; } .dot.d3 { width: 38px; left: calc(var(--g) + 3em); top: 58%; }
+  .slide.s1 { width: 64px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .js .hero > .well img { animation: breathe 4s var(--ease) both; }
+  .js .veil.light { animation: sweep 11s ease-in-out 1.2s infinite; }
+  .js .hero .ribbon { animation: drift 16s ease-in-out infinite alternate; }
+  .js .slide.s1 { animation: slide 19s cubic-bezier(.55,0,.75,.6) 2s infinite; }
+  .js .slide.s2 { animation: slide 26s cubic-bezier(.55,0,.75,.6) 9s infinite; }
+  .js .hero-copy h1 span { animation: emerge 2.4s var(--ease) .5s both; }
+  .js .hero-copy h1 span + span { animation-delay: 1s; }
+  .js .hero-copy .en, .js .hero-foot { animation: emerge 2s var(--ease) 1.6s both; }
+  .js .dot { animation: settle 3s var(--ease) 2s both; }
+  .js .cue i img { animation: fall 3.4s var(--ease) infinite; }
+}
+@keyframes breathe { from { transform: scale(1.05); filter: blur(6px); } to { transform: none; filter: none; } }
+@keyframes sweep { 0% { background-position: 130% 0; } 55%, 100% { background-position: -40% 0; } }
+@keyframes drift { from { transform: translate(0, 0); } to { transform: translate(-3%, -2%); } }
+@keyframes slide { 0% { transform: translateY(0); opacity: 0; } 6% { opacity: 1; } 70% { opacity: 1; } 100% { transform: translateY(125vh); opacity: 0; } }
+@keyframes emerge { from { opacity: 0; filter: blur(10px); transform: translateY(10px); } to { opacity: 1; filter: none; transform: none; } }
+@keyframes settle { from { opacity: 0; transform: scale(.6); } to { opacity: 1; transform: none; } }
+@keyframes fall { 0% { top: -4px; opacity: 0; } 20% { opacity: 1; } 80% { opacity: 1; } 100% { top: 46px; opacity: 0; } }
+
+/* ===== shared ===== */
+.sec { position: relative; padding: clamp(96px, 14vw, 180px) var(--g); overflow: hidden; }
+.bg-mint { background: linear-gradient(180deg, var(--water), var(--mint) 30%, var(--aqua)); }
+.bg-ice { background: linear-gradient(180deg, var(--ice), var(--water)); }
+.bg-mist { background: var(--mist); }
+@media (prefers-reduced-motion: no-preference) {
+  .rv { transition: opacity 1.8s var(--ease), transform 1.8s var(--ease), filter 1.8s var(--ease); }
+  .rv.wait { opacity: 0; transform: translateY(20px); filter: blur(8px); }
+  .wet { transition: clip-path 2.2s var(--ease); }
+  .wet.wait { clip-path: inset(0 0 100% 0); }
+  .wet img { transition: transform 3s var(--ease); }
+  .wet.wait img { transform: scale(1.08); }
+}
+
+/* ===== 02 PHILOSOPHY ===== */
+.ph { display: block; margin-top: 44px; }
+.ph-skin { margin-left: 12%; margin-right: calc(var(--g) * -1); aspect-ratio: 3 / 3.6; }
+.ph-skin img { object-position: 40% 40%; }
+.ph-glass { position: relative; margin: -34% 6% 0 0; padding: 32px 24px 34px; background: rgba(247, 250, 249, .55); -webkit-backdrop-filter: blur(16px) saturate(1.3); backdrop-filter: blur(16px) saturate(1.3); border: 1px solid rgba(255,255,255,.85); box-shadow: 0 30px 60px -40px rgba(87,78,89,.45); display: grid; gap: 20px; overflow: hidden; }
+.ph-glass::before { content: ""; position: absolute; inset: 0; background: url("img/hero-glass.jpg") 30% 20% / 260% auto; opacity: .22; mix-blend-mode: multiply; pointer-events: none; }
+.ph-glass > * { position: relative; }
+.ph-after { height: 0; }
+@media (min-width: 1040px) {
+  .ph { display: grid; grid-template-columns: repeat(12, 1fr); margin-top: 80px; }
+  .ph-skin { grid-area: 1 / 5 / 2 / 13; margin: 0 calc(var(--g) * -1) 0 0; aspect-ratio: 4 / 3.4; }
+  .ph-glass { grid-area: 1 / 1 / 2 / 7; align-self: center; margin: 0; padding: 56px 54px; }
+  .ph-after { height: 0; }
+}
+
+/* ===== 03 EXPERIENCE ===== */
+.ex-head { display: grid; gap: 20px; }
+.flow { position: relative; margin-top: 40px; height: 1220px; }
+.flow .ribbon.v { left: -40px; top: 0; height: 100%; width: auto; max-width: none; }
+.flow .ribbon.h { display: none; }
+.stop { position: absolute; left: 34%; right: 0; display: grid; gap: 8px; }
+.stop .n { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--mauve); }
+.stop h3 { font-family: var(--serif); font-size: 28px; letter-spacing: .32em; line-height: 1.2; }
+.stop p { font-size: 13.5px; line-height: 2; max-width: 20em; }
+.stop .thumb { width: 120px; aspect-ratio: 1; margin-bottom: 8px; }
+.stop.s1 { top: 4%; } .stop.s2 { top: 37%; } .stop.s3 { top: 70%; }
+@media (min-width: 1040px) {
+  .ex-head { grid-template-columns: 1fr 1fr; align-items: end; }
+  .flow { height: 620px; margin-top: 70px; }
+  .flow .ribbon.v { display: none; }
+  .flow .ribbon.h { display: block; left: calc(var(--g) * -1); top: 50%; width: calc(100% + var(--g) * 2); transform: translateY(-50%); max-width: none; }
+  .stop { left: auto; right: auto; width: 26%; }
+  .stop.s1 { left: 4%; top: 2%; } .stop.s2 { left: 38%; top: 58%; } .stop.s3 { left: 72%; top: 4%; }
+  .stop .thumb { width: 150px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .js .flow .ribbon { transition: clip-path 3.6s var(--ease); }
+  .js .flow.wait .ribbon.v { clip-path: inset(0 0 100% 0); }
+  .js .flow.wait .ribbon.h { clip-path: inset(0 100% 0 0); }
+}
+
+/* ===== 04 MENU ===== */
+.mn-head { display: grid; gap: 20px; }
+.mn-list { margin-top: 60px; display: grid; gap: 70px; }
+.mi { display: grid; gap: 18px; }
+.mi .well { aspect-ratio: 1; }
+.mi:nth-child(1) .well { width: 100%; aspect-ratio: 4 / 3; }
+.mi:nth-child(2) .well { width: 62%; }
+.mi:nth-child(3) .well { width: 78%; margin-left: auto; aspect-ratio: 5 / 4; }
+.mi:nth-child(3) .txt { justify-self: end; text-align: right; }
+.mi:nth-child(4) .well { width: calc(100% + var(--g)); margin-left: calc(var(--g) * -1); aspect-ratio: 16 / 9; }
+.mi .txt { display: grid; gap: 4px; max-width: 26em; }
+.mi .no { font-family: var(--serif); font-style: italic; color: var(--mauve); font-size: 15px; }
+.mi h3 { font-family: var(--serif); font-size: 24px; letter-spacing: .2em; line-height: 1.3; }
+.mi h3 small { display: block; font-family: var(--mincho); font-size: 11.5px; letter-spacing: .14em; color: var(--ink-2); line-height: 1.7; }
+.mi .price { font-family: var(--serif); font-size: 30px; line-height: 1.2; letter-spacing: .03em; font-variant-numeric: lining-nums; margin-top: 4px; }
+.mi .price .y { font-size: .56em; color: var(--ink-2); margin-right: .1em; } .mi .price .f { font-size: .56em; color: var(--ink-2); }
+.mi .desc { font-size: 13px; line-height: 2; margin-top: 6px; }
+.mi .tex { font-family: var(--serif); font-style: italic; font-size: 13px; color: var(--ink-2); }
+.mn-note { margin-top: 60px; }
+@media (min-width: 1040px) {
+  .mn-head { grid-template-columns: 1fr 1fr; align-items: end; }
+  .mn-list { grid-template-columns: repeat(12, 1fr); gap: 90px 24px; margin-top: 100px; }
+  .mi:nth-child(1) { grid-column: 1 / 7; }
+  .mi:nth-child(2) { grid-column: 8 / 12; margin-top: 160px; }
+  .mi:nth-child(3) { grid-column: 2 / 7; }
+  .mi:nth-child(4) { grid-column: 7 / 13; margin-top: 120px; }
+  .mi:nth-child(2) .well, .mi:nth-child(3) .well { width: 100%; }
+  .mi:nth-child(4) .well { width: calc(100% + var(--g)); margin: 0 calc(var(--g) * -1) 0 0; }
+  .mi:nth-child(3) .txt { justify-self: start; text-align: left; }
+}
+
+/* ===== 05 SPACE ===== */
+.sp-head { display: grid; gap: 20px; }
+.sp-gal { margin-top: 56px; display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+.sp-a { grid-column: 1 / -1; margin-inline: calc(var(--g) * -1); aspect-ratio: 16 / 11; }
+.sp-a img { object-position: 60% 50%; }
+.sp-b { grid-column: 1 / 4; aspect-ratio: 3 / 4.4; }
+.sp-c { grid-column: 4 / 7; aspect-ratio: 3 / 3.4; margin-top: 60px; }
+.sp-d { grid-column: 2 / 7; aspect-ratio: 16 / 7; }
+.sp-cap { font-family: var(--serif); font-style: italic; font-size: 13px; color: var(--ink-2); margin-top: 6px; }
+.sp-list { margin-top: 56px; display: grid; gap: 0; border-top: 1px solid rgba(118,107,119,.3); }
+.sp-list li { display: flex; gap: 16px; align-items: baseline; padding: 14px 0; border-bottom: 1px solid rgba(118,107,119,.16); font-family: var(--mincho); font-size: 15px; letter-spacing: .12em; }
+.sp-list li span { font-family: var(--serif); font-style: italic; font-size: 13px; color: var(--mauve); min-width: 2em; }
+@media (min-width: 1040px) {
+  .sp-head { grid-template-columns: 1fr 1fr; align-items: end; }
+  .sp-gal { grid-template-columns: repeat(12, 1fr); grid-auto-rows: 7.2vw; gap: 24px; margin-top: 90px; }
+  .sp-a { grid-column: 1 / 8; grid-row: 1 / 6; margin: 0 0 0 calc(var(--g) * -1); aspect-ratio: auto; }
+  .sp-b { grid-column: 9 / 12; grid-row: 1 / 5; aspect-ratio: auto; }
+  .sp-c { grid-column: 8 / 11; grid-row: 6 / 9; aspect-ratio: auto; margin: 0; }
+  .sp-d { grid-column: 2 / 7; grid-row: 7 / 10; aspect-ratio: auto; }
+  .sp-list { grid-template-columns: 1fr 1fr 1fr; column-gap: 40px; margin-top: 110px; }
+}
+
+/* ===== 06 MESSAGE ===== */
+.msg { min-height: 92svh; display: grid; align-content: center; background: var(--water); }
+.msg-bg { position: absolute; inset: 0; -webkit-mask-image: radial-gradient(70% 60% at 78% 50%, #000, transparent 75%); mask-image: radial-gradient(70% 60% at 78% 50%, #000, transparent 75%); opacity: .7; }
+.msg-bg img { width: 100%; height: 100%; object-fit: cover; }
+.msg-in { position: relative; display: grid; gap: 30px; max-width: 34em; }
+.msg .jp { font-size: clamp(24px, 6.4vw, 40px); font-weight: 200; }
+@media (min-width: 1040px) { .msg-in { margin-left: 8%; } }
+
+/* ===== 07 INFORMATION ===== */
+.info-grid { display: grid; gap: 40px; margin-top: 30px; }
+.info { border-top: 1px solid rgba(87,78,89,.45); }
+.info div { display: grid; grid-template-columns: 110px 1fr; gap: 14px; padding: 17px 0; border-bottom: 1px solid rgba(118,107,119,.2); }
+.info dt { font-family: var(--serif); font-size: 12.5px; letter-spacing: .28em; color: var(--ink-2); padding-top: 3px; }
+.info dd small { display: block; font-size: 11.5px; color: var(--ink-2); }
+@media (min-width: 1040px) { .info-grid { grid-template-columns: 1fr 1.3fr; gap: 90px; margin-top: 60px; } }
+
+/* ===== 08 RESERVATION ===== */
+.res { min-height: 96svh; display: grid; align-content: center; text-align: center; }
+.res > .well { position: absolute; inset: 0; }
+.res > .well img { object-position: 60% 50%; }
+.res .veil.calm { background: radial-gradient(60% 45% at 50% 50%, rgba(247,250,249,.72), rgba(247,250,249,.15) 70%, rgba(247,250,249,0)); }
+.rings { position: absolute; inset: 0; pointer-events: none; }
+.rings span { position: absolute; left: 50%; top: 50%; width: min(80vw, 760px); aspect-ratio: 1 / .38; border-radius: 50%; border: 1px solid rgba(255,255,255,.95); box-shadow: 0 0 18px rgba(255,255,255,.6), inset 0 0 18px rgba(255,255,255,.4); transform: translate(-50%, -50%) scale(.4); opacity: 0; }
+@media (prefers-reduced-motion: no-preference) { .js .rings span { animation: ring 9s var(--ease) infinite; } .js .rings span:nth-child(2) { animation-delay: 3s; } .js .rings span:nth-child(3) { animation-delay: 6s; } .js .res .veil.light { animation: sweep 13s ease-in-out infinite; } }
+@keyframes ring { 0% { opacity: 0; transform: translate(-50%, -50%) scale(.35); } 25% { opacity: .9; } 100% { opacity: 0; transform: translate(-50%, -50%) scale(1.3); } }
+.res-in { position: relative; z-index: 2; display: grid; gap: 26px; justify-items: center; }
+.res .jp { font-size: clamp(21px, 5.8vw, 34px); text-shadow: 0 0 24px rgba(247,250,249,.95); }
+.btn { display: inline-flex; align-items: center; gap: 14px; min-height: 58px; padding: 0 34px; border: 1px solid rgba(87,78,89,.5); background: rgba(247,250,249,.5); -webkit-backdrop-filter: blur(12px) saturate(1.3); backdrop-filter: blur(12px) saturate(1.3); color: var(--ink); text-decoration: none; font-family: var(--serif); font-size: 14px; letter-spacing: .28em; cursor: pointer; position: relative; overflow: hidden; transition: color .9s var(--ease), border-color .9s; }
+.btn::after { content: ""; position: absolute; top: 0; bottom: 0; width: 40%; left: -60%; background: linear-gradient(100deg, transparent, rgba(255,255,255,.85), transparent); transition: left 1.2s var(--ease); }
+.btn:hover::after { left: 120%; }
+.btn img { width: 11px; max-width: none; }
+.btn[aria-disabled="true"] { color: var(--ink-2); border-style: dashed; cursor: not-allowed; }
+.btn[aria-disabled="true"]::after { display: none; }
+.res-status { font-size: 12px; color: var(--ink); line-height: 1.9; max-width: 28em; background: rgba(247,250,249,.55); padding: 2px 10px; }
+
+/* ===== 09 FOOTER ===== */
+.ft { background: var(--water); padding: 80px var(--g) 34px; }
+.ft .logo { font-size: clamp(20px, 5.4vw, 30px); letter-spacing: .4em; display: block; }
+.ft .tag { margin-top: 10px; font-family: var(--serif); font-style: italic; color: var(--ink-2); }
+.ft-nav { margin-top: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 4px 20px; }
+.ft-nav a { font-family: var(--serif); font-size: 13px; letter-spacing: .22em; text-decoration: none; padding: 7px 0; }
+.ft-nav a:hover { color: var(--mauve); }
+.copy { margin-top: 50px; padding-top: 18px; border-top: 1px solid rgba(118,107,119,.22); display: grid; gap: 6px; font-size: 11.5px; color: var(--ink-2); }
+@media (min-width: 1040px) { .ft-nav { grid-template-columns: repeat(6, auto); justify-content: start; gap: 34px; } .copy { grid-template-columns: 1fr auto; } }
+</style>
+</head>
+<body>
+
+<div class="strip"><div class="in"><p><b>SAMPLE</b>架空のエステサロンのサンプルサイトです</p><p><a href="../../#service-works" style="font-family:var(--serif);font-style:italic">← tokalia designに戻る</a></p></div></div>
+
+<header class="hd" id="hd"><div class="in">
+  <a class="logo" href="#top" aria-label="LUMIÈRE PRIVÉE トップへ">LUMIÈRE PRIVÉE</a>
+  <nav aria-label="メインメニュー"><a href="#philosophy">PHILOSOPHY</a><a href="#experience">EXPERIENCE</a><a href="#treatments">TREATMENTS</a><a href="#space">SPACE</a><a href="#information">INFORMATION</a><a href="#reservation">RESERVATION</a></nav>
+  <button class="menu-btn" type="button" aria-expanded="false" aria-controls="ov" aria-label="メニューを開く"><span>MENU</span><span class="w" aria-hidden="true"></span></button>
+</div></header>
+
+<div class="ov" id="ov" aria-hidden="true">
+  <ol>
+    <li><a href="#philosophy"><small>肌のこと</small>Philosophy</a></li>
+    <li><a href="#experience"><small>施術の時間</small>Experience</a></li>
+    <li><a href="#treatments"><small>メニュー</small>Treatments</a></li>
+    <li><a href="#space"><small>空間</small>Space</a></li>
+    <li><a href="#information"><small>サロン情報</small>Information</a></li>
+    <li><a href="#reservation"><small>ご予約</small>Reservation</a></li>
+  </ol>
+  <p class="foot">The art of skin.</p>
+</div>
+
+<main id="top">
+  <!-- 01 OPENING -->
+  <section class="hero" aria-labelledby="hero-h">
+    <div class="well"><img src="img/hero-glass.jpg" alt="やわらかな光の前で、水滴がびっしりと付いたガラス"></div>
+    <div class="veil calm" aria-hidden="true"></div>
+    <img class="ribbon" src="img/ribbon-hero.png" alt="" aria-hidden="true">
+    <div class="veil light" aria-hidden="true"></div>
+    <div class="hero-copy">
+      <h1 id="hero-h"><span>肌に、満ちる。</span><span>私に、還る。</span></h1>
+      <p class="en">The art of skin.</p>
+    </div>
+    <img class="dot d1" src="img/drop.png" alt="" aria-hidden="true"><img class="dot d2" src="img/drop.png" alt="" aria-hidden="true"><img class="dot d3" src="img/drop.png" alt="" aria-hidden="true">
+    <img class="slide s1" src="img/drop.png" alt="" aria-hidden="true"><img class="slide s2" src="img/drop.png" alt="" aria-hidden="true">
+    <div class="hero-foot">
+      <p class="name">LUMIÈRE PRIVÉE</p>
+      <a class="cue" href="#philosophy"><i><img src="img/drop.png" alt=""></i>SCROLL</a>
+    </div>
+  </section>
+
+  <!-- 02 SKIN PHILOSOPHY -->
+  <section class="sec" id="philosophy" aria-labelledby="p-h">
+    <p class="label rv"><i>02</i>Skin philosophy</p>
+    <h2 class="h-sec rv" id="p-h">Your skin,<br><em>your story.</em></h2>
+    <div class="ph">
+      <div class="well ph-skin wet rv"><img src="img/skin-wet.jpg" alt="細かな水の粒がのった、うるおいのある素肌の接写"></div>
+      <div class="ph-glass rv">
+        <p class="jp">肌には、<br><span class="nb">ひとりひとりの</span><span class="nb">物語がある。</span></p>
+        <div class="body">
+          <p>同じ肌は、<span class="nb">ひとつとしてありません。</span></p>
+          <p>その日のコンディションも、<span class="nb">感じる悩みも、それぞれ違うもの。</span></p>
+          <p>だからこそ、私たちは一人ひとりの肌と<span class="nb">丁寧に向き合うことを大切にしています。</span></p>
+          <p>あなた自身の心地よさを<span class="nb">見つけるための時間を。</span></p>
+        </div>
+      </div>
+    </div>
+    <div class="ph-after"></div>
+  </section>
+
+  <!-- 03 TREATMENT EXPERIENCE -->
+  <section class="sec bg-mint" id="experience" aria-labelledby="e-h">
+    <div class="ex-head">
+      <div><p class="label rv"><i>03</i>Treatment experience</p><h2 class="h-sec rv" id="e-h">A moment<br><em>for your skin.</em></h2></div>
+      <p class="jp rv">肌に触れる、<span class="nb">その時間まで美しく。</span></p>
+    </div>
+    <div class="flow" id="flow">
+      <img class="ribbon v" src="img/ribbon-v.png" alt="" aria-hidden="true">
+      <img class="ribbon h" src="img/ribbon-h.png" alt="" aria-hidden="true">
+      <div class="stop s1 rv"><div class="well thumb"><img src="img/m-moisture.jpg" alt="ガラスの上の、とろみのある透明な美容液のしずく"></div><p class="n">01</p><h3>LISTEN</h3><p>肌の状態や希望を、<span class="nb">丁寧に伺うカウンセリング。</span></p></div>
+      <div class="stop s2 rv"><div class="well thumb"><img src="img/serum.jpg" alt="ガラスの上に広がる透明なジェル"></div><p class="n">02</p><h3>TOUCH</h3><p>その日の状態に合わせた、<span class="nb">丁寧なトリートメント。</span></p></div>
+      <div class="stop s3 rv"><div class="well thumb"><img src="img/m-relax.jpg" alt="静かに広がる水面の波紋"></div><p class="n">03</p><h3>RELAX</h3><p>自分だけの時間をゆっくりと<span class="nb">過ごすリラクゼーション。</span></p></div>
+    </div>
+  </section>
+
+  <!-- 04 TREATMENTS -->
+  <section class="sec" id="treatments" aria-labelledby="t-h">
+    <div class="mn-head">
+      <div><p class="label rv"><i>04</i>Treatment menu</p><h2 class="h-sec rv" id="t-h">Treatments</h2></div>
+      <p class="jp rv" style="font-size:clamp(16px,4.4vw,21px)">ひとつひとつのメニューを、<span class="nb">水と美容液の質感で。</span></p>
+    </div>
+    <ol class="mn-list">
+      <li class="mi"><div class="well wet rv"><img src="img/m-moisture.jpg" alt="ガラスにのった、丸く大きな透明のしずく"></div><div class="txt rv"><p class="no">No. 01 <span class="tex">— a single drop</span></p><h3>MOISTURE FACIAL<small>モイスチャーフェイシャル</small></h3><p class="price"><span class="y">¥</span>11,000<span class="f">〜</span></p><p class="desc">ひとしずくの水が広がるように、うるおいを感じるフェイシャルの時間。</p></div></li>
+      <li class="mi"><div class="well wet rv"><img src="img/m-glow.jpg" alt="光を受けて輝く、とろみのあるジェル"></div><div class="txt rv"><p class="no">No. 02 <span class="tex">— gel &amp; light</span></p><h3>GLOW CARE<small>グローケア</small></h3><p class="price"><span class="y">¥</span>13,200<span class="f">〜</span></p><p class="desc">光をふくんだジェルのように、肌に触れる心地よさを大切にしたケア。</p></div></li>
+      <li class="mi"><div class="well wet rv"><img src="img/m-balance.jpg" alt="ふたつの美容液のしずくが、ひとつに触れ合う"></div><div class="txt rv"><p class="no">No. 03 <span class="tex">— two drops, one</span></p><h3>BALANCE TREATMENT<small>バランストリートメント</small></h3><p class="price"><span class="y">¥</span>15,400<span class="f">〜</span></p><p class="desc">その日のコンディションを伺いながら、内容を組み合わせるトリートメント。</p></div></li>
+      <li class="mi"><div class="well wet rv"><img src="img/ripple.jpg" alt="ゆっくりと広がり、静まっていく水面の波紋"></div><div class="txt rv"><p class="no">No. 04 <span class="tex">— still water</span></p><h3>RELAXATION<small>リラクゼーション</small></h3><p class="price"><span class="y">¥</span>8,800<span class="f">〜</span></p><p class="desc">波紋が静まるように、心と体をゆっくりゆるめる時間。</p></div></li>
+    </ol>
+    <p class="note mn-note rv">※ すべて架空のサンプル料金です。実在の店舗のメニュー・料金ではありません。<br>※ 掲載内容は、施術の効果や肌の変化を保証するものではありません。</p>
+  </section>
+
+  <!-- 05 THE SENSORY SPACE -->
+  <section class="sec bg-ice" id="space" aria-labelledby="s-h">
+    <div class="sp-head">
+      <div><p class="label rv"><i>05</i>The sensory space</p><h2 class="h-sec rv" id="s-h">Feel the<br><em>stillness.</em></h2></div>
+      <p class="jp rv">五感が、<span class="nb">ゆっくりほどけていく。</span></p>
+    </div>
+    <div class="sp-gal">
+      <figure class="sp-a"><div class="well wet rv" style="height:100%"><img src="img/space.jpg" alt="丸い窓からやわらかな光が入る、白いリネンの施術ベッド"></div></figure>
+      <figure class="sp-b"><div class="well wet rv" style="height:100%"><img src="img/hero-glass.jpg" alt="水滴のついたガラス越しのやわらかな光" style="object-position:70% 30%"></div><figcaption class="sp-cap">Glass &amp; light</figcaption></figure>
+      <figure class="sp-c"><div class="well wet rv" style="height:100%"><img src="img/towel.jpg" alt="白いリネンの質感"></div><figcaption class="sp-cap">White linen</figcaption></figure>
+      <figure class="sp-d"><div class="well wet rv" style="height:100%"><img src="img/still.jpg" alt="すりガラスのボトルと丸めた白いタオル"></div><figcaption class="sp-cap">Clean &amp; quiet</figcaption></figure>
+    </div>
+    <ul class="sp-list rv">
+      <li><span>01</span>柔らかな照明</li><li><span>02</span>白いリネン</li><li><span>03</span>透明なガラス</li>
+      <li><span>04</span>水の音を感じるような空間</li><li><span>05</span>清潔感のある施術ベッド</li><li><span>06</span>落ち着いたプライベート空間</li>
+    </ul>
+  </section>
+
+  <!-- 06 MESSAGE -->
+  <section class="sec msg" id="message" aria-labelledby="m-h">
+    <div class="msg-bg" aria-hidden="true"><img src="img/serum.jpg" alt=""></div>
+    <div class="msg-in">
+      <p class="label rv"><i>06</i>Be kind to yourself.</p>
+      <h2 class="jp rv" id="m-h">誰かのためではなく、<br>自分のために。</h2>
+      <div class="body rv">
+        <p>忙しい毎日の中で、<span class="nb">自分のことを後回しにしてしまう日も</span><span class="nb">あると思います。</span></p>
+        <p>そんなときこそ、<span class="nb">少しだけ自分を大切にする時間を。</span></p>
+        <p>LUMIÈRE PRIVÉEで過ごすひとときが、<span class="nb">あなたにとって心地よい時間に</span><span class="nb">なりますように。</span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 INFORMATION -->
+  <section class="sec bg-mist" id="information" aria-labelledby="i-h">
+    <div class="info-grid">
+      <div><p class="label rv"><i>07</i>Salon</p><h2 class="h-sec rv" id="i-h">Information</h2></div>
+      <div>
+        <dl class="info rv">
+          <div><dt>ADDRESS</dt><dd>東京都港区○○<small>架空の店舗のサンプル表記です</small></dd></div>
+          <div><dt>OPEN</dt><dd>10:00〜20:00</dd></div>
+          <div><dt>CLOSED</dt><dd>不定休</dd></div>
+          <div><dt>STATION</dt><dd>○○駅 徒歩5分</dd></div>
+        </dl>
+        <p class="note rv" style="margin-top:16px">※ 掲載している情報はすべて架空のサンプルです。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 RESERVATION -->
+  <section class="sec res" id="reservation" aria-labelledby="r-h">
+    <div class="well" aria-hidden="true"><img src="img/ripple.jpg" alt=""></div>
+    <div class="rings" aria-hidden="true"><span></span><span></span><span></span></div>
+    <div class="veil calm" aria-hidden="true"></div>
+    <div class="veil light" aria-hidden="true"></div>
+    <div class="res-in">
+      <p class="label rv"><i>08</i>Reservation</p>
+      <h2 class="jp rv" id="r-h">次は、あなたの肌と<br>向き合う時間を。</h2>
+      <!-- 予約サイトのURLは、ページ下のスクリプトにある LUMIERE_CONFIG.reservationUrl に設定します -->
+      <a class="btn rv" id="res-btn" href="#reservation"><img src="img/drop.png" alt="">RESERVE YOUR MOMENT</a>
+      <p class="res-status" id="res-status" role="status" aria-live="polite"></p>
+    </div>
+  </section>
+</main>
+
+<footer class="ft">
+  <a class="logo" href="#top">LUMIÈRE PRIVÉE</a>
+  <p class="tag">The art of skin.</p>
+  <nav class="ft-nav" aria-label="フッターメニュー"><a href="#philosophy">PHILOSOPHY</a><a href="#experience">EXPERIENCE</a><a href="#treatments">TREATMENTS</a><a href="#space">SPACE</a><a href="#information">INFORMATION</a><a href="#reservation">RESERVATION</a></nav>
+  <div class="copy"><small>&copy; 2026 LUMIÈRE PRIVÉE — 架空のエステサロンです。実在の店舗ではありません。</small><small>Design sample by <a href="../../">tokalia design</a> — <a href="../../#service-works">制作サンプル一覧に戻る</a></small></div>
+</footer>
+
+<script>
+/* ─────────────────────────────────────────────
+   予約サイトのURLが決まったら、"" の中に貼ってください。
+   例： reservationUrl: "https://example.com/reserve"
+   空欄のあいだは、予約ボタンが「未設定」の表示になります。
+   ───────────────────────────────────────────── */
+const LUMIERE_CONFIG = { reservationUrl: "" };
+
+(function () {
+  document.documentElement.classList.add("js");
+  document.querySelectorAll("img").forEach((im) => {
+    const fail = () => im.classList.add("fail");
+    if (im.complete && im.naturalWidth === 0) fail(); else im.addEventListener("error", fail);
+  });
+
+  const hd = document.getElementById("hd");
+  const onScroll = () => hd.classList.toggle("on", scrollY > 30);
+  onScroll(); addEventListener("scroll", onScroll, { passive: true });
+
+  const btn = document.querySelector(".menu-btn"), ov = document.getElementById("ov");
+  const set = (o) => {
+    btn.setAttribute("aria-expanded", String(o));
+    btn.setAttribute("aria-label", o ? "メニューを閉じる" : "メニューを開く");
+    btn.querySelector("span").textContent = o ? "CLOSE" : "MENU";
+    ov.classList.toggle("open", o); ov.setAttribute("aria-hidden", String(!o));
+    document.body.classList.toggle("lock", o);
+  };
+  btn.addEventListener("click", () => set(btn.getAttribute("aria-expanded") !== "true"));
+  ov.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => set(false)));
+  addEventListener("keydown", (e) => { if (e.key === "Escape") set(false); });
+  addEventListener("resize", () => { if (innerWidth >= 1040) set(false); });
+
+  if (!matchMedia("(prefers-reduced-motion: reduce)").matches && "IntersectionObserver" in window) {
+    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.remove("wait"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -8% 0px" });
+    document.querySelectorAll(".rv, #flow").forEach((el) => { if (el.getBoundingClientRect().top > innerHeight * .9) { el.classList.add("wait"); io.observe(el); } });
+  }
+
+  const rb = document.getElementById("res-btn"), st = document.getElementById("res-status");
+  const url = (LUMIERE_CONFIG.reservationUrl || "").trim();
+  if (url) { rb.href = url; rb.target = "_blank"; rb.rel = "noopener"; }
+  else {
+    rb.setAttribute("aria-disabled", "true");
+    st.textContent = "予約先は未設定です（サンプルサイトのため、ご予約はできません）";
+    rb.addEventListener("click", (e) => e.preventDefault());
+  }
+})();
+</script>
+</body>
+</html>
